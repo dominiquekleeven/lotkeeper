@@ -1,0 +1,48 @@
+{
+    "name": "lotkeeper-frontend",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "rsbuild dev",
+        "dev:integration": "cross-env PUBLIC_LOT_HOST=https://lotkeeper.net/ rsbuild dev",
+        "build:dev": "rsbuild build",
+        "build:prod": "cross-env PUBLIC_LOT_HOST=${LOT_HOST:-/} PUBLIC_ANALYTICS_CODE=f32bfd6a-c3f4-47ae-b481-24ede2f0149b rsbuild build --mode production",
+        "preview": "rsbuild preview",
+        "lint": "eslint && prettier . --check",
+        "format": "prettier . --write"
+    },
+    "dependencies": {
+        "@mdi/font": "^7.4.47",
+        "@unhead/vue": "^2.0.14",
+        "dotenv": "^17.2.1",
+        "echarts": "^5.6.0",
+        "pinia": "^3.0.3",
+        "vue": "^3.5.18",
+        "vue-echarts": "^7.0.3",
+        "vue-router": "^4.5.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.24.0",
+        "@rsbuild/core": "^1.4.15",
+        "@rsbuild/plugin-vue": "^1.1.1",
+        "@types/node": "^22.18.0",
+        "@typescript-eslint/eslint-plugin": "^8.29.1",
+        "@typescript-eslint/parser": "^8.29.1",
+        "cross-env": "^7.0.3",
+        "eslint": "^9.24.0",
+        "eslint-config-prettier": "^10.1.2",
+        "globals": "^16.0.0",
+        "prettier": "^3.5.3",
+        "typescript": "~5.7.2",
+        "typescript-eslint": "^8.29.1"
+    },
+    "overrides": {
+        "chalk": "4.1.2",
+        "ansi-styles": "4.3.0",
+        "debug": "4.4.1",
+        "supports-color": "7.2.0",
+        "color-convert": "2.0.1",
+        "color-name": "1.1.4"
+    }
+}

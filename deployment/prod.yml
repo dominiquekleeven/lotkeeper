@@ -1,0 +1,132 @@
+name: lot
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg15
+    environment:
+      POSTGRES_DB: lotkeeper
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d lotkeeper"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command:
+      - postgres # Adjust values below to match your system's resources
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - work_mem=32MB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - effective_io_concurrency=200
+      - -c
+      - wal_level=replica
+      - -c
+      - max_wal_size=2GB
+      - -c
+      - min_wal_size=512MB
+      - -c
+      - checkpoint_timeout=15min
+      - -c
+      - checkpoint_completion_target=0.9
+      - -c
+      - synchronous_commit=off
+      - -c
+      - max_worker_processes=4
+      - -c
+      - max_parallel_workers=2
+      - -c
+      - max_parallel_workers_per_gather=2
+      - -c
+      - autovacuum=on
+      - -c
+      - autovacuum_max_workers=3
+      - -c
+      - autovacuum_naptime=20s
+      - -c
+      - timescaledb.enable_chunkwise_aggregate=on
+      - -c
+      - timescaledb.max_background_workers=4
+      - -c
+      - timescaledb.max_open_chunks_per_insert=32
+      - -c
+      - max_connections=100
+
+  valkey:
+    image: valkey/valkey:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  playwright-init:
+    image: mcr.microsoft.com/playwright:v1.55.0-noble
+    command: ["npx", "playwright@1.55.0", "install", "chromium", "--with-deps"]
+    volumes:
+      - playwright_browsers:/ms-playwright
+    restart: "no"
+
+  lotkeeper:
+    image: registry.kbnet.systems/kbnet/lotkeeper:main
+    environment:
+      LOT_AGENT_TOKEN: ${LOT_AGENT_TOKEN:?must be set}
+      LOT_ENVIRONMENT: ${LOT_ENVIRONMENT:-production}
+      LOT_DB_ECHO: ${LOT_DB_ECHO:-false}
+      LOT_POSTGRES_HOST: postgres
+      LOT_POSTGRES_PORT: 5432
+      LOT_POSTGRES_USER: postgres
+      LOT_POSTGRES_PASSWORD: postgres
+      LOT_POSTGRES_DB: lotkeeper
+      LOT_ALLOWED_ORIGINS: ${LOT_ALLOWED_ORIGINS:?must be set}
+      LOT_VALKEY_HOST: valkey
+      LOT_VALKEY_PORT: 6379
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+    ports:
+      - "127.0.0.1:8007:8007"
+    volumes:
+      - playwright_browsers:/ms-playwright
+    depends_on:
+      postgres:
+        condition: service_healthy
+      valkey:
+        condition: service_healthy
+      playwright-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8007/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  caddy_data:
+  caddy_config:
+  playwright_browsers:

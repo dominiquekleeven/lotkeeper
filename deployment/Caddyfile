@@ -1,0 +1,84 @@
+lotkeeper.net {
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+        -X-Powered-By
+    }
+
+    # Blacklist common attack/probe paths (stealth: respond 404)
+    @blacklist {
+        path /wp-admin* /wp-login* /xmlrpc.php
+        path /wp-content* /wp-includes* /wp-cron.php /wp-json*
+        path /wp-signup.php /wp-register.php
+        path /wordpress*
+        path /*.php
+        path /.well-known/security.txt
+        path /administrator* /admin* /user/login* /user/register*
+        path /typo3* /joomla* /drupal*
+        path /phpmyadmin* /pma* /dbadmin* /mysql* /sqlmanager* /sql*
+        path /myadmin* /sqlweb* /database* /db* /phpMyAdmin*
+        path /.git* /.svn* /.hg* /.bzr* /.DS_Store
+        path /.idea* /.vscode* /.well-known/acme-challenge/*
+        path /.env /env /config.php /config.json /web.config
+        path /local.xml /app/etc/local.xml
+        path /composer.json /composer.lock /package.json /yarn.lock
+        path /dump.sql /backup.sql /database.sql /db.sql
+        path /*.bak /*.old /*.swp /*~ 
+        path /vendor/* /node_modules/*
+        path /phpunit* /phpinfo.php /info.php /test.php
+        path /cgi-bin* /cgi/* /shell* /id_rsa* /id_dsa*
+        path /.htaccess /.htpasswd /apache*
+    }
+    respond @blacklist 404
+
+   
+    reverse_proxy lotkeeper:8007 {
+        health_uri /health
+        health_interval 3s
+        health_timeout 5s
+        lb_policy round_robin
+        fail_duration 10s
+        max_fails 3
+    }
+    
+    log {
+        output stdout
+        format json
+        level INFO
+    }
+
+    handle_errors {
+        @503 expression {err.status_code} == 503
+        respond @503 "Lotkeeper is temporarily unavailable. Please try again in a few moments." 503
+        respond "{err.status_code} {err.status_text}" {err.status_code}
+    }
+}
+
+analytics.lotkeeper.net {
+    encode zstd gzip
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+        -X-Powered-By
+    }
+    reverse_proxy umami-umami-1:3000 {
+        health_uri /api/heartbeat
+        health_interval 10s
+        health_timeout 5s
+        lb_policy round_robin
+        fail_duration 30s
+        max_fails 3
+    }
+}
+
+:80 {
+    redir https://{host}{uri} permanent
+}

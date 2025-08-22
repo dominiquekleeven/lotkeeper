@@ -1,0 +1,307 @@
+/* ==========================================================================
+   CSS Variables & Root Configuration
+   ========================================================================== */
+
+/* Force dark mode - prevent system theme switching */
+html {
+    color-scheme: dark !important;
+}
+
+/* Override any prefers-color-scheme media queries to force dark mode */
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        /* Force dark mode variables even when system prefers light */
+        color-scheme: dark !important;
+    }
+}
+
+:root {
+    /* Pico CSS Overrides */
+    --pico-font-family: 'Open Sans', Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+    --pico-font-family-sans-serif: 'Open Sans', Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+    --pico-primary: #d2a43e !important;
+    --pico-primary-background: #ddad44 !important;
+    --pico-primary-border: var(--pico-primary-background) !important;
+    --pico-primary-underline: rgba(199, 148, 0, 0.5) !important;
+    --pico-primary-hover: #e8ae01 !important;
+    --pico-primary-hover-background: #f1c25c !important;
+    --pico-primary-hover-border: var(--pico-primary-hover-background) !important;
+    --pico-primary-hover-underline: var(--pico-primary-hover) !important;
+    --pico-primary-focus: rgba(199, 148, 0, 0.375) !important;
+    --pico-primary-inverse: #000 !important;
+    --pico-chapter-color: #d2a43e !important;
+    --pico-border-radius: 0.5rem !important;
+    --pico-primary-bg-color: #0e2f4757;
+    --pico-icon-loading: url("data:image/svg+xml,%3Csvg fill='none' height='24' width='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' %3E%3Cstyle%3E g %7B animation: rotate 2s linear infinite; transform-origin: center center; %7D circle %7B stroke-dasharray: 75,100; stroke-dashoffset: -5; animation: dash 1.5s ease-in-out infinite; stroke-linecap: round; %7D @keyframes rotate %7B 0%25 %7B transform: rotate(0deg); %7D 100%25 %7B transform: rotate(360deg); %7D %7D @keyframes dash %7B 0%25 %7B stroke-dasharray: 1,100; stroke-dashoffset: 0; %7D 50%25 %7B stroke-dasharray: 44.5,100; stroke-dashoffset: -17.5; %7D 100%25 %7B stroke-dasharray: 44.5,100; stroke-dashoffset: -62; %7D %7D %3C/style%3E%3Cg%3E%3Ccircle cx='12' cy='12' r='10' fill='none' stroke='rgb(255, 193, 7)' stroke-width='4' /%3E%3C/g%3E%3C/svg%3E") !important;
+
+    /* Font Families */
+    --font-figtree: 'Figtree', 'Open Sans', Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+    --font-open-sans: 'Open Sans', Arial, 'Helvetica Neue', Helvetica, sans-serif !important;
+    --font-lora: 'Lora', Georgia, 'Times New Roman', serif !important;
+
+    /* Quality Colors */
+    --quality-poor: #9d9d9d;
+    --quality-common: #ffffff;
+    --quality-uncommon: #1eff00;
+    --quality-rare: #0070dd;
+    --quality-epic: #a335ee;
+    --quality-legendary: #ff8000;
+    --quality-artifact: #e6cc80;
+    --quality-heirloom: #00ccff;
+
+    /* Material Colors */
+    --color-wood: #ad6e41;
+    --color-gold: #ffd700;
+    --color-silver: #c0c0c0;
+    --color-copper: #b87333;
+    --color-bronze: #cd7f32;
+    --color-iron: #808080;
+    --color-steel: #4682b4;
+    --color-platinum: #e5e4e2;
+}
+
+/* ==========================================================================
+   Base Typography & Layout
+   ========================================================================== */
+
+body {
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-lora) !important;
+    color: var(--pico-heading-color) !important;
+    line-height: 1.2;
+}
+
+hgroup p {
+    line-height: 2;
+}
+
+main > hgroup p.chapter {
+    margin-bottom: calc(var(--pico-spacing) * 0.25);
+}
+
+/* Font Utility Classes */
+.figtree {
+    font-family: var(--font-figtree) !important;
+    line-height: 1.2;
+}
+
+.lora {
+    font-family: var(--font-lora) !important;
+    line-height: 1.2;
+}
+
+/* Text Utilities */
+.text-center {
+    text-align: center;
+}
+
+/* Simple helper class to ensure space is allocated for text thats about to be filled */
+.text-empty {
+    visibility: hidden;
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   Chapter & Content Styling
+   ========================================================================== */
+
+.chapter {
+    align-self: flex-start;
+    color: var(--pico-chapter-color);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.0625em;
+    text-transform: uppercase;
+}
+
+/* Pico Component Adjustments */
+small {
+    color: var(--pico-muted-color);
+}
+
+.muted {
+    color: var(--pico-muted-color);
+}
+
+span[data-tooltip] {
+    border: none !important;
+}
+
+/* ==========================================================================
+   Quality Color Classes
+   ========================================================================== */
+
+.quality {
+    color: var(--text-tooltip) !important;
+} /* Default (yellow) */
+
+.quality-0 {
+    color: #9d9d9d !important;
+} /* Poor */
+
+.quality-1 {
+    color: #ffffff !important;
+} /* Common */
+
+.quality-2 {
+    color: #1eff00 !important;
+} /* Uncommon */
+
+.quality-3 {
+    color: #0070dd !important;
+} /* Rare */
+
+.quality-4 {
+    color: #a335ee !important;
+} /* Epic */
+
+.quality-5 {
+    color: #ff8000 !important;
+} /* Legendary */
+
+.quality-6 {
+    color: #e5cc80 !important;
+} /* Artifact */
+
+.quality-7 {
+    color: #0cf !important;
+} /* Heirloom */
+
+/* ==========================================================================
+   Icon System
+   ========================================================================== */
+
+/* Base Icon Styles */
+img.icon-server {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Faction Icons */
+
+/* Currency Icons */
+.icon-gold {
+    content: '';
+    background-image: url('../public/icons/gold.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 16px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.icon-silver {
+    content: '';
+    background-image: url('../public/icons/silver.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 16px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.icon-copper {
+    content: '';
+    background-image: url('../public/icons/copper.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-width: 16px;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Logo */
+.logo {
+    content: '';
+    background-image: url('../public/images/logo.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Icon Effects */
+.icon-border {
+    box-sizing: content-box;
+    border-radius: 0.35rem;
+    border-right: 2px solid #3e3d3d;
+    border-bottom: 2px solid #3e3d3d;
+    border-left: 2px solid #4f4e4e;
+    border-top: 2px solid gray;
+}
+
+/* ==========================================================================
+   Component Styles
+   ========================================================================== */
+
+/* Price Display */
+.price-display {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-content: flex-end !important;
+    white-space: nowrap;
+}
+
+.price-display .icon-gold,
+.price-display .icon-silver,
+.price-display .icon-copper {
+    margin-left: 0.125rem;
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+
+.fade-in {
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+/* Desktop Only */
+@media (max-width: 768px) {
+    .desktop-only {
+        display: none;
+    }
+}
+
+/* Mobile Only */
+@media (min-width: 768px) {
+    .mobile-only {
+        display: none;
+    }
+}
