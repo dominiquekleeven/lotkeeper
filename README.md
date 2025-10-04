@@ -58,12 +58,14 @@ docker compose -f deployment/prod.yml up -d
 
 ## Key Features
 
-- Multi-server support with automatic realm creation
-- Data validation and integrity checks
-- Rate limiting and agent authentication
-- Time-series data optimization with TimescaleDB
-- Interactive charts and market analytics
-- Advanced filtering and search capabilities
+- **Time-Series Data**: Uses TimescaleDB for efficient storage and querying of historical auction data
+- **Data Validation**: Prevents anomalous data by rejecting auction submissions with >20% count drops
+- **Rate Limiting**: Protects API endpoints with configurable rate limits per endpoint type
+- **Agent Authentication**: Secure token-based authentication for data submission agents
+- **Background Processing**: Asynchronous generation of analytics and aggregated statistics
+- **Multi-Realm Management**: Automatic creation and tracking of new server/realm combinations
+- **Interactive Charts**: Real-time market trend visualization with configurable time ranges
+- **Advanced Search**: Filter auctions by multiple item properties with full-text search capabilities
 
 ## API
 
